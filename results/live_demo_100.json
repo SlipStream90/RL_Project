@@ -7,26 +7,97 @@
   "done": false,
   "final_step": 100,
   "turns_recorded": 100,
-  "deals": [],
+  "deals": [
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 6,
+      "timestep": 50
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 10,
+      "timestep": 55
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 7,
+      "timestep": 60
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 5,
+      "timestep": 65
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 8,
+      "timestep": 70
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 6,
+      "timestep": 75
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 10,
+      "timestep": 80
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 7,
+      "timestep": 85
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 5,
+      "timestep": 90
+    },
+    {
+      "buyer": "buyer_a",
+      "seller": "seller_b",
+      "price": 80.0,
+      "quantity": 8,
+      "timestep": 95
+    }
+  ],
   "total_reward_per_agent": {
-    "buyer_a": 0.18,
-    "buyer_b": 0.16,
-    "market_manager": -0.2,
+    "buyer_a": 0.08,
+    "buyer_b": -0.04,
+    "market_manager": 0.3735,
     "seller_a": 0.2,
     "seller_b": 0.2
   },
   "final_budgets": {
-    "buyer_a": 10000.0,
+    "buyer_a": 4240.0,
     "buyer_b": 10000.0,
     "seller_a": 0.0,
     "seller_b": 0.0,
     "market_manager": 0.0
   },
   "final_inventories": {
-    "buyer_a": 0,
+    "buyer_a": 72,
     "buyer_b": 0,
     "seller_a": 100,
-    "seller_b": 100,
+    "seller_b": 28,
     "market_manager": 0
   },
   "turns": [
@@ -868,41 +939,33 @@
       "step": 51,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 1,
       "next": "buyer_b"
     },
     {
       "step": 52,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 1,
       "next": "seller_a"
     },
     {
       "step": 53,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         9
       ],
@@ -912,7 +975,7 @@
         "price": 90.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 1,
       "next": "seller_b"
     },
     {
@@ -929,7 +992,7 @@
         "price": 80.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 1,
       "next": "market_manager"
     },
     {
@@ -946,48 +1009,40 @@
         "price": 80.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 1,
       "next": "buyer_a"
     },
     {
       "step": 56,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
-        9
+        3
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 2,
       "next": "buyer_b"
     },
     {
       "step": 57,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 2,
       "next": "seller_a"
     },
     {
       "step": 58,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         6
       ],
@@ -997,7 +1052,7 @@
         "price": 90.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 2,
       "next": "seller_b"
     },
     {
@@ -1014,7 +1069,7 @@
         "price": 80.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 2,
       "next": "market_manager"
     },
     {
@@ -1031,48 +1086,40 @@
         "price": 80.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 2,
       "next": "buyer_a"
     },
     {
       "step": 61,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 3,
       "next": "buyer_b"
     },
     {
       "step": 62,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 3,
       "next": "seller_a"
     },
     {
       "step": 63,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         4
       ],
@@ -1082,7 +1129,7 @@
         "price": 90.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 3,
       "next": "seller_b"
     },
     {
@@ -1099,7 +1146,7 @@
         "price": 80.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 3,
       "next": "market_manager"
     },
     {
@@ -1116,48 +1163,40 @@
         "price": 80.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 3,
       "next": "buyer_a"
     },
     {
       "step": 66,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 4,
       "next": "buyer_b"
     },
     {
       "step": 67,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 4,
       "next": "seller_a"
     },
     {
       "step": 68,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         7
       ],
@@ -1167,7 +1206,7 @@
         "price": 90.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 4,
       "next": "seller_b"
     },
     {
@@ -1184,7 +1223,7 @@
         "price": 80.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 4,
       "next": "market_manager"
     },
     {
@@ -1201,48 +1240,40 @@
         "price": 80.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 4,
       "next": "buyer_a"
     },
     {
       "step": 71,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 5,
       "next": "buyer_b"
     },
     {
       "step": 72,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 5,
       "next": "seller_a"
     },
     {
       "step": 73,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         5
       ],
@@ -1252,7 +1283,7 @@
         "price": 90.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 5,
       "next": "seller_b"
     },
     {
@@ -1269,7 +1300,7 @@
         "price": 80.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 5,
       "next": "market_manager"
     },
     {
@@ -1286,48 +1317,40 @@
         "price": 80.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 5,
       "next": "buyer_a"
     },
     {
       "step": 76,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 6,
       "next": "buyer_b"
     },
     {
       "step": 77,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 6,
       "next": "seller_a"
     },
     {
       "step": 78,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         9
       ],
@@ -1337,7 +1360,7 @@
         "price": 90.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 6,
       "next": "seller_b"
     },
     {
@@ -1354,7 +1377,7 @@
         "price": 80.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 6,
       "next": "market_manager"
     },
     {
@@ -1371,48 +1394,40 @@
         "price": 80.0,
         "quantity": 10
       },
-      "deals_so_far": 0,
+      "deals_so_far": 6,
       "next": "buyer_a"
     },
     {
       "step": 81,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 7,
       "next": "buyer_b"
     },
     {
       "step": 82,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 7,
       "next": "seller_a"
     },
     {
       "step": 83,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         6
       ],
@@ -1422,7 +1437,7 @@
         "price": 90.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 7,
       "next": "seller_b"
     },
     {
@@ -1439,7 +1454,7 @@
         "price": 80.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 7,
       "next": "market_manager"
     },
     {
@@ -1456,48 +1471,40 @@
         "price": 80.0,
         "quantity": 7
       },
-      "deals_so_far": 0,
+      "deals_so_far": 7,
       "next": "buyer_a"
     },
     {
       "step": 86,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 8,
       "next": "buyer_b"
     },
     {
       "step": 87,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 8,
       "next": "seller_a"
     },
     {
       "step": 88,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         4
       ],
@@ -1507,7 +1514,7 @@
         "price": 90.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 8,
       "next": "seller_b"
     },
     {
@@ -1524,7 +1531,7 @@
         "price": 80.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 8,
       "next": "market_manager"
     },
     {
@@ -1541,48 +1548,40 @@
         "price": 80.0,
         "quantity": 5
       },
-      "deals_so_far": 0,
+      "deals_so_far": 8,
       "next": "buyer_a"
     },
     {
       "step": 91,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 9,
       "next": "buyer_b"
     },
     {
       "step": 92,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 9,
       "next": "seller_a"
     },
     {
       "step": 93,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         7
       ],
@@ -1592,7 +1591,7 @@
         "price": 90.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 9,
       "next": "seller_b"
     },
     {
@@ -1609,7 +1608,7 @@
         "price": 80.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 9,
       "next": "market_manager"
     },
     {
@@ -1626,48 +1625,40 @@
         "price": 80.0,
         "quantity": 8
       },
-      "deals_so_far": 0,
+      "deals_so_far": 9,
       "next": "buyer_a"
     },
     {
       "step": 96,
       "agent": "buyer_a",
       "action": [
-        1,
+        2,
         3,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_a",
-        "price": 80.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": 0.0,
+      "active_offer": null,
+      "deals_so_far": 10,
       "next": "buyer_b"
     },
     {
       "step": 97,
       "agent": "buyer_b",
       "action": [
-        1,
+        4,
         4,
         9
       ],
-      "reward": 0.01,
-      "active_offer": {
-        "offerer": "buyer_b",
-        "price": 90.0,
-        "quantity": 10
-      },
-      "deals_so_far": 0,
+      "reward": -0.01,
+      "active_offer": null,
+      "deals_so_far": 10,
       "next": "seller_a"
     },
     {
       "step": 98,
       "agent": "seller_a",
       "action": [
-        1,
+        0,
         4,
         5
       ],
@@ -1677,7 +1668,7 @@
         "price": 90.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 10,
       "next": "seller_b"
     },
     {
@@ -1694,7 +1685,7 @@
         "price": 80.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 10,
       "next": "market_manager"
     },
     {
@@ -1705,13 +1696,13 @@
         0,
         0
       ],
-      "reward": -0.01,
+      "reward": 0.5635294117647058,
       "active_offer": {
         "offerer": "seller_b",
         "price": 80.0,
         "quantity": 6
       },
-      "deals_so_far": 0,
+      "deals_so_far": 10,
       "next": "buyer_a"
     }
   ]

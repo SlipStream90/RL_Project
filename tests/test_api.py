@@ -77,6 +77,27 @@ def test_live_negotiation_is_not_a_fixed_same_role_cycle():
     assert len(set(seller_a_offer_prices)) >= 3, seller_a_offer_prices
 
 
+def test_query_reject_question_is_not_hijacked_by_the_word_offer():
+    r = client.post("/api/v1/simulation/start", json={"seed": 42, "max_steps": 100})
+    ep = r.json()["episode_id"]
+    for _ in range(60):
+        client.post(f"/api/v1/simulation/{ep}/step", json={"action": None})
+    q = client.post("/api/v1/query", json={
+        "question": "Why did Buyer A reject Seller A's first offer?", "episode_id": ep})
+    assert q.status_code == 200
+    answer = q.json()["answer"]
+    assert "REJECT" in answer or "No recorded REJECT" in answer
+
+    q2 = client.post("/api/v1/query", json={
+        "question": "Why did Seller B counteroffer?", "episode_id": ep})
+    assert "COUNTEROFFER" in q2.json()["answer"] or "No recorded COUNTEROFFER" in q2.json()["answer"]
+
+
+def test_query_unknown_episode_is_404_not_another_episode():
+    r = client.post("/api/v1/query", json={"question": "Why?", "episode_id": "nope"})
+    assert r.status_code == 404
+
+
 def test_not_found():
     assert client.get("/api/v1/episodes/nope/trajectory").status_code == 404
 

@@ -201,6 +201,10 @@ def query(req: QueryReq):
                 break
     episode_id = req.episode_id
     env = _sessions.get(episode_id) if episode_id else None
+    if env is None and episode_id:
+        # An explicit episode that is not live must not silently answer
+        # about a different episode.
+        raise HTTPException(404, f"episode {episode_id} not found; start a simulation first")
     if env is None and _sessions:
         env = list(_sessions.values())[-1]
         episode_id = env.current_episode_id
@@ -321,9 +325,11 @@ def query(req: QueryReq):
                       f"Reward is a shaped RL signal, not rupee surplus.", 0.9)
 
     # --- action-specific why: reject/offer/counteroffer/accept/wait/withdraw -
+    # Specific verbs win over the generic noun "offer" (which also appears
+    # inside "counteroffer" and in phrases like "reject ... first offer").
     wanted = None
-    for name in _ACTION_NAMES:
-        if name.lower() in q:
+    for name in ("COUNTEROFFER", "REJECT", "ACCEPT", "WITHDRAW", "WAIT", "OFFER"):
+        if re.search(rf"\b{name.lower()}\b", q):
             wanted = name
             break
     if wanted or "why" in q:

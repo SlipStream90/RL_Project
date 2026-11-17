@@ -1,0 +1,18 @@
+{
+  "model": "distilbert-base-uncased",
+  "train_n": 2054,
+  "test_n": 946,
+  "held_out_templates": [
+    "ACCEPT_2",
+    "COUNTEROFFER_2",
+    "OFFER_3",
+    "REJECT_2",
+    "WAIT_2",
+    "WITHDRAW_2"
+  ],
+  "accuracy": 0.1828752642706131,
+  "epochs": 2,
+  "device": "cpu",
+  "train_seconds": 214.29984998703003,
+  "batch_latency_s_median": 1.1089849999989383
+}

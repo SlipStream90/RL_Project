@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS — Multi-Agent Negotiation &amp; Explainability Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #17202a;
+    --muted: #5b6b7b;
+    --line: #d8dee5;
+    --paper: #ffffff;
+    --bg: #f0f2f5;
+
+    --role-buyer: #0e7490;
+    --role-seller: #b8860b;
+    --role-manager: #6b4fa1;
+
+    --role-buyer-fill: #e3f2f6;
+    --role-buyer-border: #0e7490;
+    --role-seller-fill: #fdf3e0;
+    --role-seller-border: #b8860b;
+    --role-manager-fill: #f4effb;
+    --role-manager-border: #6b4fa1;
+
+    --radius: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .brand {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav { display: flex; gap: 1.6rem; }
+  .nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .nav a:hover { color: var(--ink); background: #eef1f4; }
+  .nav a.active { color: var(--ink); background: #eef1f4; font-weight: 600; }
+
+  /* Layout */
+  .shell {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Sidebar */
+  .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow);
+  }
+  h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+  h2 { font-size: 1.1rem; font-weight: 700; margin: 1.2rem 0 0.5rem; color: var(--ink); }
+  h3 { font-size: 0.95rem; font-weight: 600; margin: 0.8rem 0 0.4rem; color: var(--ink); }
+  p.lede { color: var(--muted); font-size: 0.9rem; max-width: 62ch; margin-bottom: 1rem; }
+
+  /* Buttons */
+  button {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.55rem 1rem;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.15s;
+  }
+  button:hover { background: #2c3540; border-color: #2c3540; }
+  button.secondary { background: var(--paper); color: var(--ink); }
+  button.secondary:hover { background: #eef1f4; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Chips */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.12rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    border: 1px solid;
+    font-family: "Inter", sans-serif;
+  }
+  .chip.buyer { background: var(--role-buyer-fill); color: var(--role-buyer); border-color: var(--role-buyer-border); }
+  .chip.seller { background: var(--role-seller-fill); color: var(--role-seller); border-color: var(--role-seller-border); }
+  .chip.manager { background: var(--role-manager-fill); color: var(--role-manager); border-color: var(--role-manager-border); }
+
+  /* Tables */
+  table { border-collapse: collapse; width: 100%; font-family: "Inter", sans-serif; font-size: 0.82rem; margin: 0.75rem 0; }
+  th, td { border-bottom: 1px solid var(--line); text-align: left; padding: 0.5rem 0.6rem; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  tr:hover { background: #f7f8fa; }
+
+  /* Mono */
+  .mono { font-family: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.78rem; }
+
+  /* States */
+  .empty { color: var(--muted); font-style: italic; text-align: center; padding: 2rem; }
+  .loading { color: var(--muted); font-style: italic; padding: 1rem; }
+  .alert { color: #a33; background: rgba(163, 51, 51, 0.08); border: 1px solid #e7b7b7; border-radius: 6px; padding: 0.75rem 1rem; margin: 0.75rem 0; font-size: 0.88rem; }
+  .notice { background: var(--role-buyer-fill); border-left: 4px solid var(--role-buyer-border); border-radius: 0 var(--radius) var(--radius) 0; padding: 0.8rem 1rem; font-size: 0.88rem; margin: 0.75rem 0; }
+
+  /* Checklist */
+  .checklist ol { list-style: none; padding-left: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.7; }
+  .checklist li { margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .checklist .mark { font-weight: 700; width: 18px; text-align: center; }
+  .checklist .done .mark { color: var(--role-buyer); }
+  .checklist .done label { color: var(--muted); text-decoration: line-through; }
+
+  /* Welcome */
+  .welcome { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; background: var(--paper); }
+  .welcome h3 { margin-top: 0; font-size: 1rem; }
+  .welcome ul { margin: 0.5rem 0 0 1.2rem; color: var(--muted); font-size: 0.85rem; }
+  .welcome li { margin-bottom: 0.25rem; }
+  .welcome button.dismiss { float: right; font-size: 0.65rem; padding: 0.12rem 0.4rem; margin-top: -0.2rem; }
+
+  /* Action badge */
+  .action-badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-family: "Inter", sans-serif;
+  }
+  .action-badge.offer { background: #dcf7ec; color: #0e7490; }
+  .action-badge.counteroffer { background: #fdf3e0; color: #b8860b; }
+  .action-badge.accept { background: #e3f2f6; color: #0e7490; }
+  .action-badge.reject { background: #fbeaea; color: #a33; }
+  .action-badge.wait { background: #eef1f4; color: #5b6b7b; }
+  .action-badge.withdraw { background: #ede9f8; color: #6b4fa1; }
+
+  /* Reward */
+  .reward-badge {
+    font-family: "Inter", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.12rem 0.5rem;
+    border-radius: 4px;
+  }
+  .reward-badge.pos { background: #e3f2f6; color: #0e7490; }
+  .reward-badge.neg { background: #fbeaea; color: #a33; }
+  .reward-badge.zero { background: #eef1f4; color: #5b6b7b; }
+
+  /* Evidence */
+  .evidence-item {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    margin: 0.5rem 0;
+    background: var(--paper);
+    font-size: 0.82rem;
+  }
+  .evidence-item .meta { display: flex; gap: 0.5rem; font-family: "Source Code Pro", monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 0.25rem; }
+  .evidence-item .val { font-family: "Source Code Pro", monospace; }
+
+  /* Network graph */
+  .net-wrap {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+    margin-bottom: 1rem;
+  }
+  .net-svg { width: 100%; height: 100%; border-radius: var(--radius); }
+  .node-group { cursor: pointer; }
+  .node-label { font-family: "Inter", sans-serif; font-size: 10px; font-weight: 700; fill: var(--ink); text-anchor: middle; pointer-events: none; letter-spacing: 0.04em; }
+  .node-reward { font-family: "Inter", sans-serif; font-size: 9px; fill: var(--muted); text-anchor: middle; pointer-events: none; }
+  .anim-line { stroke-width: 3; stroke-dasharray: 6,4; animation: draw 0.6s ease forwards; }
+  .anim-dot { r: 6; animation: pulseNode 1.2s ease-in-out infinite; }
+  @keyframes draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+  @keyframes pulseNode { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.6; transform: scale(1.3); } }
+
+  /* Live feed */
+  .feed { list-style: none; padding: 0; margin: 0; }
+  .feed li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-family: "Inter", sans-serif;
+    font-size: 0.82rem;
+  }
+  .feed li:last-child { border-bottom: none; }
+
+  /* Lab charts */
+  .metric-group { margin-bottom: 1.5rem; }
+  .metric-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .metric-label { font-weight: 600; font-size: 0.9rem; }
+  .chip.win { font-size: 0.68rem; padding: 0.1rem 0.5rem; }
+  .bar-row { display: flex; flex-direction: column; gap: 0.25rem; min-width: 100px; }
+  .bar-track { height: 12px; background: var(--line); border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
+  .bar-val { font-family: "Source Code Pro", monospace; font-size: 0.8rem; }
+  .bar-name { font-family: "Inter", sans-serif; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .stat { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
+  .stat .t { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat .v { font-size: 1.4rem; font-weight: 700; margin-top: 0.25rem; font-family: "Inter", sans-serif; }
+
+  /* Checkpoints */
+  .ckpts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#">NEXUS</a>
+  <nav class="nav">
+    <a href="#" class="active">Marketplace</a>
+    <a href="#">Agent Profiles</a>
+    <a href="#">Negotiation Replay</a>
+    <a href="#">Explainability</a>
+    <a href="#">Experiment Lab</a>
+  </nav>
+</header>
+
+<div class="shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="panel">
+      <h3 style="margin-top:0;font-size:1rem">How to use NEXUS</h3>
+      <div class="checklist">
+        <ol>
+          <li class="done"><span class="mark done">&#10003;</span><label>Start an episode</label></li>
+          <li class="done"><span class="mark done">&#10003;</span><label>Step through turns</label></li>
+          <li><span class="mark">&#9675;</span><label>Read the replay</label></li>
+          <li><span class="mark">&#9675;</span><label>Ask "why?" in Explainability</label></li>
+        </ol>
+        <p style="font-size:0.78rem;color:var(--muted);margin-top:0.6rem">Next action: <strong>Read the replay</strong></p>
+      </div>
+    </div>
+    <div class="welcome">
+      <h3>Welcome to NEXUS</h3>
+      <p>NEXUS simulates a five-agent marketplace where RL policies negotiate. Every step is recorded, so you can replay it and ask why an agent acted.</p>
+      <ul>
+        <li><strong>Buyer A</strong> (Purchaser): price-focused buyer.</li>
+        <li><strong>Buyer B</strong> (Purchaser): speed-focused buyer.</li>
+        <li><strong>Seller A</strong> (Supplier): margin-focused seller.</li>
+        <li><strong>Seller B</strong> (Supplier): volume-focused seller.</li>
+        <li><strong>Market Manager</strong> (Controller): market stability.</li>
+      </ul>
+      <button class="dismiss" style="font-size:0.65rem;padding:0.12rem 0.4rem;margin-top:-0.2rem;">×</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+    <h1>Marketplace</h1>
+    <p class="lede">Live five-agent marketplace. RL baseline policies act on each turn. Watch actions travel across the network, then inspect any agent's private profile.</p>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap">
+      <span class="mono">Episode: ep_0001</span>
+      <span class="mono">Turn 42 · buyer_a</span>
+      <div style="display:flex;gap:0.5rem">
+        <button class="secondary">Step once</button>
+        <button class="secondary">Auto-play</button>
+        <button>Reset</button>
+      </div>
+    </div>
+
+    <div class="net-wrap">
+      <svg class="net-svg" viewBox="0 0 1000 440" aria-label="Agent negotiation network" role="img">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L9,3 z" fill="#5b6b7b" />
+          </marker>
+        </defs>
+        <!-- Edges -->
+        <line x1="120" y1="220" x2="500" y2="120" stroke="#d8dee5" strokeWidth="2" />
+        <line x1="120" y1="380" x2="500" y2="120" stroke="#d8dee5" strokeWidth="2" />
+        <line x1="880" y1="220" x2="500" y2="120" stroke="#d8dee5" strokeWidth="2" />
+        <line x1="880" y1="380" x2="500" y2="120" stroke="#d8dee5" strokeWidth="2" />
+        <line x1="120" y1="220" x2="880" y2="220" stroke="#d8dee5" strokeWidth="2" />
+        <line x1="120" y1="380" x2="880" y2="380" stroke="#d8dee5" strokeWidth="2" />
+        <!-- Animated message (buyer_a -> seller_a offer) -->
+        <line class="anim-line" x1="120" y1="220" x2="880" y2="220" stroke="#0e7490" strokeDasharray="6,4" />
+        <circle class="anim-dot" cx="880" cy="220" fill="#0e7490" />
+        <!-- Nodes -->
+        <g class="node-group">
+          <circle cx="120" cy="220" r="16" fill="#e3f2f6" stroke="#0e7490" strokeWidth="3" />
+          <text class="node-label" x="120" y="226">BUYER_A</text>
+          <text class="node-reward" x="120" y="244">₹0.152</text>
+        </g>
+        <g class="node-group">
+          <circle cx="120" cy="380" r="16" fill="#e3f2f6" stroke="#0e7490" strokeWidth="3" />
+          <text class="node-label" x="120" y="386">BUYER_B</text>
+          <text class="node-reward" x="120" y="404">₹0.041</text>
+        </g>
+        <g class="node-group">
+          <circle cx="500" cy="120" r="16" fill="#f4effb" stroke="#6b4fa1" strokeWidth="3" />
+          <text class="node-label" x="500" y="126">MARKET_MANAGER</text>
+          <text class="node-reward" x="500" y="144">₹0.008</text>
+        </g>
+        <g class="node-group">
+          <circle cx="880" cy="220" r="18" fill="#fdf3e0" stroke="#b8860b" strokeWidth="3" />
+          <text class="node-label" x="880" y="226">SELLER_A</text>
+          <text class="node-reward" x="880" y="244">₹0.029</text>
+        </g>
+        <g class="node-group">
+          <circle cx="880" cy="380" r="16" fill="#fdf3e0" stroke="#b8860b" strokeWidth="3" />
+          <text class="node-label" x="880" y="386">SELLER_B</text>
+          <text class="node-reward" x="880" y="404">₹0.033</text>
+        </g>
+        <text x="500" y="420" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5b6b7b">Latest action: buyer_a OFFER · ₹110 × 6 &rarr; seller_a</text>
+      </svg>
+    </div>
+
+    <div class="panel">
+      <h3 style="margin-top:0;font-size:1rem">Live feed</h3>
+      <ul class="feed">
+        <li><span class="chip buyer">buyer_a</span><span class="action-badge offer">OFFER</span><span class="mono">₹110 × 6</span><span class="reward-badge pos">+0.010</span></li>
+        <li><span class="chip seller">seller_a</span><span class="action-badge counteroffer">COUNTEROFFER</span><span class="mono">₹130 × 5</span><span class="reward-badge pos">+0.010</span></li>
+        <li><span class="chip buyer">buyer_b</span><span class="action-badge reject">REJECT</span><span class="mono">— × —</span><span class="reward-badge zero">0.000</span></li>
+        <li><span class="chip manager">market_manager</span><span class="action-badge wait">WAIT</span><span class="mono">— × —</span><span class="reward-badge neg">-0.010</span></li>
+        <li><span class="chip seller">seller_b</span><span class="action-badge accept">ACCEPT</span><span class="mono">₹120 × 4</span><span class="reward-badge pos">+0.120</span></li>
+      </ul>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

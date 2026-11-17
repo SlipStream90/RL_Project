@@ -1,0 +1,87 @@
+{
+  "mode": "full",
+  "train_episodes_per_learned_algo": 5000,
+  "eval_episodes": 100,
+  "seconds_total": 3224.1872885227203,
+  "ippo_500_gate": {
+    "first50_mean_reward": -0.03581193582887702,
+    "episodes_451_500_mean_reward": 0.1521552121212121,
+    "improved": true
+  },
+  "exp1": {
+    "results": {
+      "mappo": {
+        "mean_reward": 0.09211428571428573,
+        "cumulative_reward_per_episode": 0.4605714285714285,
+        "transaction_rate": 1.0,
+        "negotiation_duration_steps": 40.0,
+        "buyer_savings": 0.44155844155844154,
+        "seller_profit": 0.023809523809523832,
+        "deals_total": 700,
+        "episodes": 100
+      },
+      "ippo": {
+        "mean_reward": -0.0059999999999999975,
+        "cumulative_reward_per_episode": -0.029999999999999968,
+        "transaction_rate": 0.0,
+        "negotiation_duration_steps": 40.0,
+        "buyer_savings": 0.0,
+        "seller_profit": 0.0,
+        "deals_total": 0,
+        "episodes": 100
+      },
+      "rule_based": {
+        "mean_reward": 0.06021807486631017,
+        "cumulative_reward_per_episode": 0.3010903743315508,
+        "transaction_rate": 0.56,
+        "negotiation_duration_steps": 35.24,
+        "buyer_savings": 0.11397461503769091,
+        "seller_profit": 0.5976633807959107,
+        "deals_total": 83,
+        "episodes": 100
+      },
+      "random": {
+        "mean_reward": -0.35692464451235045,
+        "cumulative_reward_per_episode": -1.7846232225617522,
+        "transaction_rate": 0.46,
+        "negotiation_duration_steps": 28.58,
+        "buyer_savings": -0.3148841354723707,
+        "seller_profit": 1.1747474747474747,
+        "deals_total": 60,
+        "episodes": 100
+      }
+    },
+    "mappo_wins": [
+      "mean_reward",
+      "cumulative_reward_per_episode",
+      "transaction_rate",
+      "buyer_savings"
+    ],
+    "mappo_wins_count": 4,
+    "success_criterion": "MAPPO best on >=3 of the 5 PRD metrics (reward, savings, profit, transaction rate, duration)"
+  },
+  "exp4_policy_shift_mappo": {
+    "checkpoints": [
+      100,
+      5000
+    ],
+    "kl_by_head_type_price_qty": [
+      1.0561369574135653,
+      0.46364065145070976,
+      0.4737423897142429
+    ],
+    "mean_kl": 0.6645066661928393
+  },
+  "exp4_policy_shift_ippo": {
+    "checkpoints": [
+      100,
+      5000
+    ],
+    "kl_by_head_type_price_qty": [
+      1.7500426817373695,
+      0.37906800218322373,
+      0.36905410251322196
+    ],
+    "mean_kl": 0.8327215954779384
+  }
+}

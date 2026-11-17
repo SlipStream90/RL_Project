@@ -1,0 +1,15 @@
+# Playwright
+playwright-report/
+trace/
+test-results/
+**/playwright-report
+**/trace
+**/test-results
+
+# Next.js
+.next/
+out/
+
+# OS
+.DS_Store
+Thumbs.db

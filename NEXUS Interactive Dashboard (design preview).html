@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEXUS: Interactive Dashboard (design preview)</title>
+<style>
+:root{--bg:#eef1f4;--card:#fff;--ink:#16202c;--mute:#5b6775;--line:#dde3ea;--btn:#16202c;--btnink:#fff;--buy:#0f8b7d;--sel:#d98a14;--mgr:#6b4fd3;--ok:#1b8a4b;--bad:#c4412f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161d;--card:#18212b;--ink:#e8edf2;--mute:#9aa7b5;--line:#2a3643;--btn:#e8edf2;--btnink:#10161d;--buy:#35c2b2;--sel:#f0a93a;--mgr:#9a85f0;--ok:#4cc27d;--bad:#ef7b6a}}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{background:var(--card);border-bottom:2px solid var(--ink);display:flex;align-items:center;gap:18px;padding:10px 20px;flex-wrap:wrap}
+.brand{font:700 22px Georgia,serif;letter-spacing:.15em}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:none;border:0;color:var(--mute);font:inherit;padding:6px 10px;border-radius:6px;cursor:pointer}
+nav button.on{background:var(--ink);color:var(--bg)}
+.wrap{max-width:1180px;margin:0 auto;padding:18px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+h1{font:700 28px Georgia,serif;margin:0 0 4px}.sub{color:var(--mute);margin:0 0 14px;max-width:640px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.btn{background:var(--btn);color:var(--btnink);border:1px solid var(--btn);font:inherit;padding:8px 14px;border-radius:6px;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink)}.btn:disabled{opacity:.4;cursor:default}
+.btn.pulse{animation:pl 1.4s infinite}@keyframes pl{0%{box-shadow:0 0 0 0 rgba(15,139,125,.6)}100%{box-shadow:0 0 0 12px rgba(15,139,125,0)}}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.banner{font-size:13px;color:var(--mute);border-left:3px solid var(--mgr);background:var(--bg);padding:6px 10px;border-radius:4px;margin-bottom:12px}
+svg{width:100%;height:auto;display:block}
+.node{cursor:pointer}.node circle.c{stroke-width:3;fill:var(--card)}
+.lbl{font:600 12px system-ui;fill:var(--ink);text-anchor:middle}.sm{font:11px system-ui;fill:var(--mute);text-anchor:middle}
+.feed{display:flex;flex-direction:column;gap:6px;margin-top:10px;min-height:120px}
+.msg{display:flex;gap:8px;align-items:baseline;padding:7px 10px;border-radius:8px;background:var(--bg);animation:in .35s}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}}
+.chip{font-size:11px;font-weight:700;padding:1px 8px;border-radius:99px;color:#fff;white-space:nowrap}
+.act{font-weight:700}.accept,.confirm{color:var(--ok)}.reject{color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+.scroll{overflow-x:auto}
+input[type=text]{flex:1;min-width:200px;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
+.q{font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.ans{border-left:3px solid var(--buy);padding:4px 12px;margin-top:12px}.ev{font-size:13px;color:var(--mute)}
+aside .card{position:sticky;top:12px}
+aside h3{margin:0 0 8px;font-size:15px}
+.st{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;color:var(--mute)}
+.st b{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;flex:none}
+.st.done{color:var(--ink)}.st.done b{background:var(--ok);border-color:var(--ok);color:#fff}
+.st.next{color:var(--ink);font-weight:600}.st.next b{border-color:var(--buy)}
+.bar{height:6px;background:var(--line);border-radius:4px;margin:8px 0}.bar i{display:block;height:100%;background:var(--ok);border-radius:4px;transition:width .4s}
+.hide{display:none}.prof{font-size:13px;margin-top:8px}
+</style></head><body>
+<header><span class="brand">NEXUS</span>
+<nav id="nav"></nav></header>
+<div class="wrap"><main>
+
+<section id="t-market"><h1>Marketplace</h1>
+<p class="sub">Two buyers and two sellers negotiate; the market manager records trades. Click any agent to inspect its private profile.</p>
+<div class="banner">Design preview: turns below come from a small seeded simulator in this page, not your FastAPI backend. Swap <code>sim()</code> for <code>/api/v1/simulation/*</code> calls.</div>
+<div class="card"><div class="row">
+<button class="btn" id="bStart">Start episode</button>
+<button class="btn ghost" id="bStep" disabled>Step once</button>
+<button class="btn ghost" id="bAuto" disabled>▶ Auto-play</button>
+<span class="sub" id="stat" style="margin:0 0 0 auto">No episode yet</span></div>
+<svg id="map" viewBox="0 0 700 340" role="img" aria-label="Agent network"></svg>
+<div class="prof" id="prof">Select an agent to see its profile.</div>
+<div class="feed" id="feed"></div></div></section>
+
+<section id="t-profiles" class="hide"><h1>Agent Profiles</h1>
+<p class="sub">Private configuration per agent. Reservation prices stay hidden from other agents inside the environment; they are shown here for research inspection.</p>
+<div class="card scroll"><table id="ptab"></table></div></section>
+
+<section id="t-replay" class="hide"><h1>Negotiation Replay</h1>
+<p class="sub">Turn-by-turn record for the current episode: who acted, what they chose, and what they earned.</p>
+<div class="card scroll"><table><thead><tr><th>Step</th><th>Agent</th><th>Action</th><th>Band / Qty</th><th>Reward</th></tr></thead><tbody id="rbody"><tr><td colspan="5">No turns yet. Start an episode and step through it.</td></tr></tbody></table></div></section>
+
+<section id="t-xai" class="hide"><h1>Explainability</h1>
+<p class="sub">Ask about a recorded decision. Answers are assembled from trajectory evidence; nothing is invented.</p>
+<div class="card"><div class="row"><input type="text" id="qin" value="Why did Buyer A reject Seller A’s first offer?"><button class="btn" id="qgo">Ask</button></div>
+<div class="row" style="margin-top:10px" id="qchips"></div><div id="ans"></div></div></section>
+
+<section id="t-lab" class="hide"><h1>Experiment Lab</h1>
+<p class="sub">MAPPO, IPPO, rule-based and random are compared by the Week 6 harness. This page never fills in numbers the harness has not produced.</p>
+<div class="card"><p><b>Algorithms:</b> mappo, ippo, rule_based, random</p>
+<div class="banner">Not wired in this preview. In the real app, fetch <code>results/summary.json</code> and render each metric as a grouped bar per algorithm, with an empty state until the file exists.</div></div></section>
+
+</main>
+<aside><div class="card"><h3>How to use NEXUS</h3>
+<div class="bar"><i id="prog" style="width:0"></i></div><div id="steps"></div></div></aside></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const P={buyer_a:{n:'Buyer A',role:'buyer',budget:10000,inv:0,res:85,needs:10,risk:.3,x:90,y:80},
+buyer_b:{n:'Buyer B',role:'buyer',budget:10000,inv:0,res:110,needs:10,risk:.6,x:90,y:260},
+seller_a:{n:'Seller A',role:'seller',budget:0,inv:100,res:90,needs:10,risk:.3,x:610,y:80},
+seller_b:{n:'Seller B',role:'seller',budget:0,inv:100,res:80,needs:10,risk:.7,x:610,y:260},
+market_manager:{n:'Market Manager',role:'manager',budget:0,inv:0,res:0,needs:0,risk:.5,x:350,y:170}};
+const col=r=>r==='buyer'?'var(--buy)':r==='seller'?'var(--sel)':'var(--mgr)';
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function sim(seed){const r=rng(seed),T=[];const add=(a,act,to,price,why,rew)=>T.push({n:T.length+1,a,act,to,price,qty:10,why,rew:rew||0});
+const ask0=112+Math.round(r()*4);
+add('seller_a','offer','buyer_a',ask0,'Opening ask, set well above its ₹90 floor.');
+add('buyer_a','reject','seller_a',ask0,'Ask ₹'+ask0+' is above this buyer’s ₹85 reservation price.');
+const pairs=[{b:'buyer_a',s:'seller_b',bid:68,ask:100+Math.round(r()*3)},{b:'buyer_b',s:'seller_a',bid:86,ask:ask0}];
+const deal=(p,px,who)=>{const B=P[p.b],S=P[p.s],bs=(B.res-px)*10,ss=(px-S.res)*10,o=who===p.b;p.done=1;
+add(who,'accept',o?p.s:p.b,px,'Price ₹'+px+(o?' is within the ₹'+B.res+' reservation.':' covers the ₹'+S.res+' floor.'),o?bs:ss);
+add(o?p.s:p.b,'confirm',who,px,'Counterparty confirms the trade at ₹'+px+'.',o?ss:bs);
+add('market_manager','record',p.b,px,'Trade recorded: '+B.n+' ↔ '+S.n+' at ₹'+px+' x10.',0)};
+for(let k=0;k<6;k++)for(const p of pairs){if(p.done)continue;const B=P[p.b],S=P[p.s];
+add(p.b,'offer',p.s,p.bid,'Bid raised toward its limit of ₹'+B.res+'.');
+if(p.bid>=S.res){deal(p,p.bid,p.s);continue}
+p.ask=Math.max(S.res,Math.round(p.ask-(p.ask-p.bid)*(.2+.2*S.risk)));
+add(p.s,'counter',p.b,p.ask,'Ask lowered; floor is ₹'+S.res+'.');
+if(p.ask<=B.res)deal(p,p.ask,p.b);else p.bid=Math.min(B.res,Math.round(p.bid+(B.res-p.bid)*(.4+.4*B.risk)))}
+return T}
+let T=[],i=0,timer=null,done={};
+const steps=[['start','Start an episode','Marketplace → Start episode.'],['step','Step through turns','Press Step once a few times, or Auto-play.'],['replay','Read the replay','Open Negotiation Replay for the full table.'],['xai','Ask “why?”','Open Explainability and pick a question.']];
+function guide(){const nx=steps.find(s=>!done[s[0]]);$('#steps').innerHTML=steps.map((s,k)=>`<div class="st ${done[s[0]]?'done':s===nx?'next':''}"><b>${done[s[0]]?'✓':k+1}</b><div>${s[1]}<br><small>${s[2]}</small></div></div>`).join('');
+$('#prog').style.width=Object.keys(done).length/steps.length*100+'%';
+$('#bStart').classList.toggle('pulse',!done.start);$('#bStep').classList.toggle('pulse',done.start&&!done.step)}
+const tabs=[['market','Marketplace'],['profiles','Agent Profiles'],['replay','Negotiation Replay'],['xai','Explainability'],['lab','Experiment Lab']];
+$('#nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+function show(t){tabs.forEach(x=>$('#t-'+x[0]).classList.toggle('hide',x[0]!==t));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+if(t==='replay'&&i>0)done.replay=1;if(t==='xai')done.xai=done.xai;guide()}
+$('#nav').onclick=e=>{if(e.target.dataset.t)show(e.target.dataset.t)};
+$('#ptab').innerHTML='<tr><th>Agent</th><th>Role</th><th>Budget</th><th>Inventory</th><th>Reservation ₹</th><th>Needs</th><th>Risk</th></tr>'+Object.entries(P).map(([k,a])=>`<tr><td>${k}</td><td>${a.role}</td><td>${a.budget}</td><td>${a.inv}</td><td>${a.res}</td><td>${a.needs}</td><td>${a.risk}</td></tr>`).join('');
+const ids=Object.keys(P),M=$('#map');
+M.innerHTML='<g stroke="var(--line)" stroke-width="2">'+['buyer_a','buyer_b'].flatMap(b=>['seller_a','seller_b'].map(s=>`<line x1="${P[b].x}" y1="${P[b].y}" x2="${P[s].x}" y2="${P[s].y}"/>`)).join('')+'</g><g stroke="var(--mgr)" stroke-dasharray="4 5" opacity=".5">'+ids.filter(k=>k!=='market_manager').map(k=>`<line x1="350" y1="170" x2="${P[k].x}" y2="${P[k].y}"/>`).join('')+'</g>'+
+ids.map(k=>{const a=P[k];return`<g class="node" data-k="${k}"><circle class="c" cx="${a.x}" cy="${a.y}" r="32" stroke="${col(a.role)}"/><text class="lbl" x="${a.x}" y="${a.y+4}">${a.n.split(' ').map(w=>w[0]).join('')}</text><text class="lbl" x="${a.x}" y="${a.y+52}">${a.n}</text><text class="sm" id="rw-${k}" x="${a.x}" y="${a.y+67}">${a.role==='manager'?'records trades':'reward 0'}</text></g>`}).join('')+'<g id="fly"></g>';
+M.onclick=e=>{const g=e.target.closest('.node');if(!g)return;const k=g.dataset.k,a=P[k];$('#prof').innerHTML=`<b>${a.n}</b> (${a.role}) · budget ₹${a.budget} · inventory ${a.inv} · reservation ₹${a.res} · needs ${a.needs} · risk ${a.risk}`}
+function fly(a,b,txt,c){const g=document.createElementNS('http://www.w3.org/2000/svg','g'),A=P[a],B=P[b];
+g.innerHTML=`<circle r="9" fill="${c}"/><text class="sm" y="-14" style="fill:var(--ink);font-weight:700">${txt}</text>`;$('#fly').appendChild(g);const t0=performance.now(),d=700;
+(function f(t){const p=Math.min(1,(t-t0)/d);g.setAttribute('transform',`translate(${A.x+(B.x-A.x)*p},${A.y+(B.y-A.y)*p})`);p<1?requestAnimationFrame(f):g.remove()})(t0)}
+function tot(){const s={};ids.forEach(k=>s[k]=0);T.slice(0,i).forEach(t=>s[t.a]+=t.rew);return s}
+function render(){const t=T[i-1];if(!t)return;
+const to=t.a==='market_manager'?t.to:t.to;fly(t.a,to,t.act==='record'?'record':'₹'+t.price,col(P[t.a].role));
+$('#feed').insertAdjacentHTML('afterbegin',`<div class="msg"><span class="chip" style="background:${col(P[t.a].role)}">${P[t.a].n}</span><span><span class="act ${t.act}">${t.act}</span> → ${P[t.to].n} at ₹${t.price}. <span style="color:var(--mute)">${t.why}</span></span></div>`);
+while($('#feed').children.length>5)$('#feed').lastChild.remove();
+const s=tot();ids.forEach(k=>{if(P[k].role!=='manager')$('#rw-'+k).textContent='reward '+s[k]});
+$('#stat').textContent=i>=T.length?'Episode complete · '+T.length+' turns':'Turn '+i+' of '+T.length;
+$('#rbody').innerHTML=T.slice(0,i).map(x=>`<tr><td>${x.n}</td><td>${x.a}</td><td class="act ${x.act}">${x.act}</td><td>₹${Math.floor(x.price/5)*5}–${Math.floor(x.price/5)*5+5} · ${x.qty}</td><td>${x.rew||'–'}</td></tr>`).join('');
+if(i>=T.length)stop()}
+function step(){if(!T.length||i>=T.length)return;i++;if(i>=2)done.step=1;render();guide()}
+function stop(){clearInterval(timer);timer=null;$('#bAuto').textContent='▶ Auto-play'}
+$('#bStart').onclick=()=>{stop();T=sim(42);i=0;done.start=1;$('#feed').innerHTML='';$('#rbody').innerHTML='<tr><td colspan="5">Episode started. Step through it first.</td></tr>';ids.forEach(k=>{if(P[k].role!=='manager')$('#rw-'+k).textContent='reward 0'});$('#bStep').disabled=$('#bAuto').disabled=false;$('#stat').textContent='Seed 42 · ready';guide()};
+$('#bStep').onclick=step;
+$('#bAuto').onclick=()=>{if(timer)return stop();$('#bAuto').textContent='⏸ Pause';timer=setInterval(step,1100)};
+const QS=['Why did Buyer A reject Seller A’s first offer?','Who got the best deal?','What did the market manager do?'];
+$('#qchips').innerHTML=QS.map(q=>`<button class="q">${q}</button>`).join('');
+$('#qchips').onclick=e=>{if(e.target.className==='q'){$('#qin').value=e.target.textContent;ask()}};
+function ask(){const q=$('#qin').value.toLowerCase(),seen=T.slice(0,i);let h;
+if(!seen.length)h='No recorded trajectory yet. Start an episode and step through it first.';
+else if(q.includes('reject')){const r=seen.find(t=>t.act==='reject'),o=r&&seen[r.n-2];h=r?`<b>Step ${r.n}:</b> Buyer A rejected Seller A’s opening ask of ₹${o.price}.<div class="ev">Evidence: step ${o.n} ask ₹${o.price} vs Buyer A reservation ₹85, a gap of ₹${o.price-85}. ${r.why}</div>`:'That decision is not in the recorded turns yet. Step the episode further.'}
+else if(q.includes('best')||q.includes('deal')){const s=tot();const ev=Object.entries(s).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]);h=ev.length?`<b>Highest surplus so far:</b> ${P[ev[0][0]].n} with ${ev[0][1]}.<div class="ev">Evidence: ${ev.map(e=>P[e[0]].n+' '+e[1]).join(' · ')} (reward = surplus x quantity from accept/confirm turns).</div>`:'No trades have closed yet in the recorded turns.'}
+else if(q.includes('manager')){const m=seen.filter(t=>t.a==='market_manager');h=m.length?`<b>${m.length} trade(s) recorded.</b><div class="ev">${m.map(t=>'Step '+t.n+': '+t.why).join('<br>')}</div>`:'The manager has not recorded a trade yet.'}
+else h='That question is not covered by the recorded trajectory, so no answer is given.';
+$('#ans').innerHTML='<div class="ans">'+h+'</div>';done.xai=1;guide()}
+$('#qgo').onclick=ask;$('#qin').onkeydown=e=>{if(e.key==='Enter')ask()};
+show('market');
+</script></body></html>

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Project environment (recreate: py -3.12 -m venv .venv)
+.venv/
+
+# Node / Next.js
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Generated results: keep the small JSON evidence, ignore binaries & logs
+results/*.log
+results/checkpoints/
+results/distilbert-intent*/
+results/tools/
+runs/
+mlruns/
+
+# Tooling / editors / OS
+.playwright-cli/
+output/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# LaTeX intermediates (keep .tex and .pdf)
+*.aux
+*.out
+*.toc
+NEXUS_Report.log
